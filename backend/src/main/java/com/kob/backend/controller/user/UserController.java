@@ -25,7 +25,7 @@
 //    //测试API
 //    @GetMapping("/user/all")
 //    public List<User> getAll() {
-//        System.out.println("yes");
+//        tln("yes");
 //        return userMapper.selectList(null);
 //    }
 //
