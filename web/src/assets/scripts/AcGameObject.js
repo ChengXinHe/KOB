@@ -15,7 +15,7 @@ export class AcGameObject {
 
     }
 
-    on_destory() {  //删之前执行一次
+    on_destroy() {  //删之前执行一次
         
     }
 
@@ -44,7 +44,6 @@ const step = timestamp => {
         }
     }
     last_timestamp = timestamp;
-
     requestAnimationFrame(step)
 }
 
