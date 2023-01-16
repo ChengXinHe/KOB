@@ -16,7 +16,10 @@ export default {
         let canvas = ref(null);
 
         onMounted(() => {
-            new GameMap(canvas.value.getContext('2d'), parent.value, store) //canvas.value.getContext 取得这个canvas element的context
+            store.commit(
+                "updateGameObject", 
+                new GameMap(canvas.value.getContext('2d'), parent.value, store)
+                ); //canvas.value.getContext 取得这个canvas element的context
         });
 
         return {     //返回后才能在template里用
