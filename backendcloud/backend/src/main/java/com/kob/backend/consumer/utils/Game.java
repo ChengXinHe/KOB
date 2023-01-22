@@ -2,7 +2,10 @@ package com.kob.backend.consumer.utils;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.kob.backend.consumer.WebSocketServer;
+import com.kob.backend.pojo.Bot;
 import com.kob.backend.pojo.Record;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,12 +13,12 @@ import java.util.List;
 import java.util.Random;
 import java.util.concurrent.locks.ReentrantLock;
 
-public class Game extends Thread{
-    final private Integer rows;
-    final private Integer cols;
-    final private Integer inner_walls_count;
-    final private int[][] g;
-    final private static int[] dx = {-1, 0, 1, 0}, dy = {0, 1, 0, -1};
+public class Game extends Thread {
+    private final Integer rows;
+    private final Integer cols;
+    private final Integer inner_walls_count;
+    private final int[][] g;
+    private final static int[] dx = {-1, 0, 1, 0}, dy = {0, 1, 0, -1};
 
     private final Player playerA, playerB;
     private Integer nextStepA = null;
@@ -25,13 +28,35 @@ public class Game extends Thread{
     private String status = "playing"; //playing -> finished
     private String loser = ""; //all 平局 A A输 B B输
 
-    public Game(Integer rows, Integer cols, Integer inner_walls_count, Integer idA, Integer idB) {
+    private final static String addBotUrl = "http://127.0.0.1:3002/bot/add/";
+
+    public Game(
+            Integer rows,
+            Integer cols,
+            Integer inner_walls_count,
+            Integer idA,
+            Bot botA,
+            Integer idB,
+            Bot botB
+    ) {
         this.rows = rows;
         this.cols = cols;
         this.inner_walls_count = inner_walls_count;
         this.g = new int[rows][cols];
-        playerA = new Player(idA, rows - 2, 1, new ArrayList<>());
-        playerB = new Player(idB, 1, cols - 2, new ArrayList<>());
+
+        Integer botIdA = -1, botIdB = -1;
+        String botCodeA = "", botCodeB = "";
+        if (botA != null) {
+            botIdA = botA.getId();
+            botCodeA = botA.getContent();
+        }
+
+        if (botB != null) {
+            botIdB = botB.getId();
+            botCodeB = botB.getContent();
+        }
+        playerA = new Player(idA, botIdA, botCodeA, rows - 2, 1, new ArrayList<>());
+        playerB = new Player(idB, botIdB, botCodeB, 1, cols - 2, new ArrayList<>());
     }
 
     public Player getPlayerA() {
@@ -53,7 +78,7 @@ public class Game extends Thread{
 
     public void setNextStepB(Integer nextStepB) {
         lock.lock();
-        try{
+        try {
             this.nextStepB = nextStepB;
         } finally {
             lock.unlock();
@@ -122,12 +147,47 @@ public class Game extends Thread{
         }
     }
 
+    private String getInput(Player player) { //将当前局面编码成字符串
+        // 地图 # 自己起始x坐标 # 自己起始y坐标 # 我的操作 # 对手起始x坐标 # 自己起始y坐标 # 我的操作
+        Player me, you;
+        if (playerA.getId().equals(player.getId())) {
+            me = playerA;
+            you = playerB;
+        } else {
+            me = playerB;
+            you = playerA;
+        }
+
+        return getMapString() + "#" +
+                me.getSx() + "#" +
+                me.getSy() + "#(" +
+                me.getStepsString() + ")#" +
+                you.getSx() + "#" +
+                you.getSy() + "#(" +
+                you.getStepsString() + ")";
+
+
+    }
+
+    private void sendBotCode(Player player) {
+        if (player.getBotId().equals(-1)) return;
+        MultiValueMap<String, String> data = new LinkedMultiValueMap<>();
+        data.add("user_id", player.getId().toString());
+        data.add("bot_code", player.getBotCode());
+        data.add("input", getInput(player));
+
+        WebSocketServer.restTemplate.postForObject(addBotUrl, data, String.class);
+    }
+
     private boolean nextStep() {
         try {
             Thread.sleep(200);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        sendBotCode(playerA);
+        sendBotCode(playerB);
 
 
         for (int i = 0; i < 50; i++) { //等待另一名玩家输入
@@ -194,7 +254,7 @@ public class Game extends Thread{
         if (WebSocketServer.users.get(playerA.getId()) != null)
             WebSocketServer.users.get(playerA.getId()).sendMessage(message);
         if (WebSocketServer.users.get(playerB.getId()) != null)
-        WebSocketServer.users.get(playerB.getId()).sendMessage(message);
+            WebSocketServer.users.get(playerB.getId()).sendMessage(message);
     }
 
     private void sendMove() { //向两个client传递移动信息
@@ -240,7 +300,7 @@ public class Game extends Thread{
         WebSocketServer.recordMapper.insert(record);
     }
 
-    private void sendResult () { //向两个client广播结果
+    private void sendResult() {   //向两个client广播结果
         JSONObject resp = new JSONObject();
         resp.put("event", "result");
         resp.put("loser", loser);
