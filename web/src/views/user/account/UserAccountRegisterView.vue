@@ -50,7 +50,7 @@ export default {
         //触发函数，当提交的时候触发
         const register = () => {
             $.ajax({
-                url: "http://127.0.0.1:3000/user/account/register/",
+                url: "https://app4561.acapp.acwing.com.cn/api/user/account/register/",
                 type: "post",
                 data: {
                     username: username.value,

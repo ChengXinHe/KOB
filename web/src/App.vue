@@ -15,7 +15,7 @@ export default {
   },
   setup() {
     // $.ajax({
-    //   url: "http://127.0.0.1:3000/user/account/token/",
+    //   url: "https://app4561.acapp.acwing.com.cn/api/user/account/token/",
     //   type: "post",
     //   data: {
     //     username: "cxh",
@@ -31,7 +31,7 @@ export default {
     // });
 
     // $.ajax({
-    //   url:"http://127.0.0.1:3000/user/account/info/",
+    //   url:"https://app4561.acapp.acwing.com.cn/api/user/account/info/",
     //   type:"get",
     //   headers:{
     //     Authorization: "Bearer " + "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiI2NTBmNWY4YWRhZTI0Y2MxOWE5NzhhMzA5OGEzNzgyNiIsInN1YiI6IjEiLCJpc3MiOiJzZyIsImlhdCI6MTY3Mjg4ODU4OSwiZXhwIjoxNjc0MDk4MTg5fQ.l4FBOS1A77s_2S4J28PdKu3-C9Ec2xR_ANV2SSGe4RU"
@@ -45,7 +45,7 @@ export default {
     // });
 
     // $.ajax({
-    //   url: "http://127.0.0.1:3000/user/account/register/",
+    //   url: "https://app4561.acapp.acwing.com.cn/api/user/account/register/",
     //   type: "post",
     //   data:{
     //     username:"2023",
