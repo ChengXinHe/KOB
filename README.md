@@ -12,7 +12,7 @@ Submitted by: **Xinhe Cheng**
 The following **required** functionality is completed:
 
 - [x] **Users can register and log in, and the private information is encrypted with HmacSHA256.**
-- [x] **Unregistered users can only access the login and registration pages. Include JWT tokens to limit authentication.**
+- [x] **Unregistered users can only access the login and registration pages. Include JWT tokens to limit authentication. Token is appended in http header to keep session.**
 - [x] **Contains a record page to replay recent pk records.**
 - [x] **A rankings page is included to get the top players with the highest scores in this game.**
 - [x] **Users can create, delete and modify their own AI bots to play, or play on the keyboard themselves.**
