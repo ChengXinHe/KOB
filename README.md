@@ -6,6 +6,9 @@ Submitted by: **Xinhe Cheng**
 
 **King of Snake Bots** Created a multiplayer online battle game with microservices based on Vue, Springboot, and Mysql.
 
+<img src='gif/pic.png' title='Video Walkthrough' width='' alt='Video Walkthrough' />  
+&ensp;
+
 
 ## Features
 
