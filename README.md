@@ -70,6 +70,7 @@ Designed the intelligent players matching system by Spring Cloud, webSocket, and
 Utilized a built-in code compiler to support user-defined bots. Supported at least 100+ players online at the same time.
 ### Deploy: 
 Used Nginx to achieve load balancing strategy, and deployed the project containerized by docker.
+### Protocol: http & Websocket
 
 ## License
 
